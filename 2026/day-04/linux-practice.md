@@ -6,21 +6,21 @@
 ps aux | head -5
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(417).png)
 
 ### Command 2: List system resource usage
 ```bash
 top -n 1 | head -10
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(418).png)
 
 ### Command 3: Find processes by name
 ```bash
 pgrep -l ssh
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(419).png)
 
 ---
 
@@ -31,14 +31,14 @@ pgrep -l ssh
 systemctl status ssh
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(420).png)
 
 ### Command 2: List active services
 ```bash
 systemctl list-units --type=service | head -5
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(421).png)
 
 ---
 
@@ -49,14 +49,14 @@ systemctl list-units --type=service | head -5
 journalctl -u ssh -n 10
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(422).png)
 
 ### Command 2: Tail syslog
 ```bash
 tail -n 10 /var/log/syslog
 ```
 
-![image alt](Screenshot)
+![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/43e2a9823dd1697d3589eeac39a7fd9b98cca47d/2026/day-04/images/Screenshot%20(424).png)
 
 ---
 
@@ -64,18 +64,11 @@ tail -n 10 /var/log/syslog
     
 Step 1: Checked if `ssh` process is running with `pgrep -l ssh`.
 
-![image alt](Screenshot)
-
 Step 2: Verified service status using `systemctl status ssh`.
-
-![image alt](Screenshot)
 
 Step 3: Inspected logs with `journalctl -u ssh -n 10`.
 
-![image alt](Screenshot)
-
 Step 4: Confirmed no recent errors in `/var/log/syslog`.
 
-![image alt](Screenshot)
 
 Conclusion: SSH service is active and running correctly. Logs show normal startup messages, no errors detected.
