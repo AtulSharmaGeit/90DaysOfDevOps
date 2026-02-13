@@ -121,7 +121,9 @@ Service chosen: `sshd` (OpenSSH server)
 
 ## IF THIS WORSENS (NEXT Steps)
 1. **Restart strategy:** Restart sshd service (`sudo systemctl restart ssh`) and confirm socket rebind. 
+
 2. **Increase log verbosity:** Enable `LogLevel DEBUG` in `/etc/ssh/sshd_config` for deeper trace. 
+
 3. **Collect diagnostics:** Use `strace -p <pid>` or `tcpdump -i any port 22` to capture anomalies.
 
 ---
