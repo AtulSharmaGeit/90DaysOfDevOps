@@ -70,5 +70,4 @@ Step 3: Inspected logs with `journalctl -u ssh -n 10`.
 
 Step 4: Confirmed no recent errors in `/var/log/syslog`.
 
-
 Conclusion: SSH service is active and running correctly. Logs show normal startup messages, no errors detected.
