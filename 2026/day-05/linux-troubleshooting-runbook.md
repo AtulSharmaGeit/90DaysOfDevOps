@@ -95,6 +95,7 @@ Service chosen: `sshd` (OpenSSH server)
 
 - `sshd` started cleanly, listening on 0.0.0.0 and :: port 22  
 - Accepted publickey logins for user ubuntu  
+
 **Observation:** Service startup successful, recent logins normal, no errors.
 
 **Command:** `tail -n 50 /var/log/auth.log`  
@@ -105,6 +106,7 @@ Service chosen: `sshd` (OpenSSH server)
 - Multiple successful publickey logins for `ubuntu`  
 - Normal CRON sessions for root  
 - One invalid banner exchange from localhost  
+
 **Observation:** Authentication events show normal activity, successful logins, no brute-force attempts. Minor invalid banner exchange noted but not critical.
 
 ---
