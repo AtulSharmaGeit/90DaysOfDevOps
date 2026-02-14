@@ -5,7 +5,19 @@
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(451).png)
 
 - Contains the entire file system hierarchy.
-- Example: ls -l / → shows bin, etc, home, var  
+-   `/bin` → essential binaries like ls, cat, bash.
+
+    `/etc` → configuration files.
+
+    `/home` → user home directories.
+
+    `/root` → root user’s home.
+
+    `/var` → logs, spool files, caches.
+
+    `/tmp` → temporary files.
+
+    `/usr` → user applications and libraries. 
 - I would use this when I need to navigate to the starting point of the system.
 
 2. `/home` 
@@ -13,64 +25,86 @@
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(453').png)
 
 - User home directories.
-- Example: ls -l /home → shows atul, guest  
+- Each subdirectory under `/home` corresponds to a user account.
+- Inside each user’s home directory, you’ll find files like `.bashrc`, `.ssh/`, `Documents/`, `Downloads/`. 
 - I would use this when accessing user-specific files and configurations.
 
 3. `/root`  
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(453).png)
 
-- Home directory for the root user.
-- Example: ls -l /root → shows .ssh, .bashrc  
-- I would use this when logged in as root to manage system-level tasks.
+- `/root` is the home directory for the root user, separate from /home.
+-   `.bashrc` → shell configuration file for root’s interactive sessions.
+
+    `.profile` → login shell configuration.
+
+    `.ssh/` → SSH keys and configuration for root.
+- I would use this when performing administrative tasks that require root privileges, like editing system-wide configs or managing secure keys.
 
 4. `/etc`  
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(454).png)
 
-- System configuration files.
-- Example: ls -l /etc → shows hostname, hosts  
-- I would use this when editing system configs like networking or hostname.
+- `/etc` holds configuration files for services, applications, and the system itself.
+- `/etc` is the control center for system behavior.
+-   `hostname` → defines the system’s hostname.
+
+    `hosts` → maps hostnames to IP addresses.
+
+    `ssh/` → configuration for the SSH service.
+
+    `apache2/` → configuration for Apache web server.
+
+    `network/` → networking configuration files. 
+- I would use this when I need to configure services, networking, or system identity (like hostname).
 
 5. `/var/log`  
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(455).png)
 
-- Log files for services and applications.
-- Example: ls -l /var/log → shows syslog, auth.log  
-- I would use this when troubleshooting service failures or errors.
+-  It contains logs for services, applications, and the operating system itself.
+- `/var/log` is your first stop for troubleshooting.
+-   `auth.log` → authentication attempts (logins, sudo usage).
+
+    `syslog` → general system messages.
+
+    `kern.log` → kernel-related messages.
+
+    `dpkg.log` → package installation/removal logs (Debian/Ubuntu).
+
+- I would use this when diagnosing why a service failed, checking authentication attempts, or monitoring system health.
 
 6. `/tmp`  
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(456).png)
 
-- Temporary files, cleared on reboot.
-- Example: ls -l /tmp → shows tmp1234, socketXYZ  
-- I would use this when storing short-lived files or testing scripts.
+- `/tmp` is used for temporary storage by applications, installers, and scripts.
+- `/tmp` is used by applications and the system to store short-lived files. It’s world-writable (any user can write here), and its contents are usually cleared on reboot.
+- I would use this when testing scripts that need scratch space or when checking if an application created temporary files or sockets.
 
 7. `/bin`  
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(457).png)
 
-- Essential command binaries.
-- Example: ls -l /bin → shows ls, cat, bash  
-- I would use this when running basic commands required for system operation.
+- `/bin` contains the fundamental programs needed for the system to boot and run in single-user mode. 
+- `/bin` is critical because it contains the basic tools needed to interact with the system.
+- I would use this when running fundamental commands like ls, cat, or bash that are required even if other filesystems aren’t mounted.
 
 8. `/usr/bin` 
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(458).png)
 
-- User command binaries.
-- Example: ls -l /usr/bin → shows python3, git, vim  
-- I would use this when running user-installed applications.
+- `/usr/bin` is one of the largest directories on a Linux system because it contains most of the executables that regular users and administrators run day-to-day. 
+- `/usr/bin` is where most user-level applications and utilities live.
+- I would use this when running programming languages, editors, or tools installed via package managers.
 
 9. `/opt`  
 
 ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/7b6aa3a44d096213cb0fe477df5b56430e7e5cf8/2026/day-07/Images/Screenshot%20(459).png)
 
-- Optional/third-party applications.
-- Example: ls -l /opt → shows google, custom-app  
-- I would use this when installing external software packages.
+- `/opt` is used for installing third-party or add-on software that doesn’t come with the base operating system. It’s often empty unless you’ve installed external packages manually or via certain installers.
+- `/opt` is the playground for external software.
+- I would use this when installing or managing applications that aren’t part of the default Linux distribution, like Chrome, proprietary tools, or enterprise apps.
 
 ---
 # Practice solving real-world scenarios.
