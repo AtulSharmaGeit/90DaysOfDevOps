@@ -118,10 +118,10 @@ Why: Check if service is active, failed, or inactive.
 Step 2: `journalctl -u myapp -n 50`  
 Why: View last 50 log entries for error messages.
 
-Step 3: `systemctl is-enabled myapp`  
+Step 3: `systemctl is-enabled myapp`    
 Why: Verify if service is enabled to start on boot.
 
-Step 4: `systemctl list-units --type=service | grep myapp` 
+Step 4: `systemctl list-units --type=service | grep myapp`  
 Why: Confirm if the service unit exists and is loaded.
 
 ## Scenario 2: High CPU Usage
@@ -133,10 +133,10 @@ Why: Shows live CPU usage and top processes.
 Step 2: `htop`  
 Why: Provides interactive view with CPU/memory breakdown.
 
-Step 3: `ps aux --sort=-%cpu | head -10` 
+Step 3: `ps aux --sort=-%cpu | head -10`    
 Why: Lists top 10 processes sorted by CPU usage.
 
-Step 4: `kill -9 <PID> (if necessary)`
+Step 4: `kill -9 <PID> (if necessary)`  
 Why: Terminate runaway process after identifying PID.
 
 ## Scenario 3: Finding Service Logs
@@ -163,5 +163,5 @@ Why: Add execute permission.
 Step 3: `ls -l /home/user/backup.sh`  
 Why: Verify permissions now include x.
 
-Step 4: `./backup.sh` 
+Step 4: `./backup.sh`   
 Why: Run the script after fixing permissions.
