@@ -136,7 +136,7 @@ Why: Provides interactive view with CPU/memory breakdown.
 Step 3: `ps aux --sort=-%cpu | head -10`    
 Why: Lists top 10 processes sorted by CPU usage.
 
-Step 4: `kill -9 <PID> (if necessary)`  
+Step 4: `kill -9 <PID>` (if necessary)   
 Why: Terminate runaway process after identifying PID.
 
 ## Scenario 3: Finding Service Logs
