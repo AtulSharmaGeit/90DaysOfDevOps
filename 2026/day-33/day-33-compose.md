@@ -57,32 +57,30 @@
     ```
 2. Write the `docker-compose.yml`
     ```yaml
-    version: "3.9"
-
     services:
       db:
-        image: mysql:5.7
+        image: mysql:8.0
         restart: always
         environment:
           MYSQL_DATABASE: wordpress
           MYSQL_USER: wpuser
-          MYSQL_PASSWORD: wppass
-          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_PASSWORD: wppassword
+          MYSQL_ROOT_PASSWORD: rootpassword
         volumes:
           - db_data:/var/lib/mysql
 
       wordpress:
         image: wordpress:latest
         restart: always
+        depends_on:
+          - db
         ports:
           - "8081:80"
         environment:
-          WORDPRESS_DB_HOST: db:3306
+          WORDPRESS_DB_HOST: db
           WORDPRESS_DB_USER: wpuser
-          WORDPRESS_DB_PASSWORD: wppass
+          WORDPRESS_DB_PASSWORD: wppassword
           WORDPRESS_DB_NAME: wordpress
-        depends_on:
-          - db
 
     volumes:
       db_data:
@@ -97,12 +95,31 @@
     ```
     - `-d` runs in detached mode.
     - Compose will pull images if not already present.
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(218).png)
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(220).png)
+
+    ```bash
+    docker-compose logs -f
+    ```
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(221).png)
+
 4. Access WordPress
     ```Code
     http://localhost:8081
     ```
     - You should see the WordPress setup page.
     - Complete the installation (site title, admin user, password, etc.).
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(224).png)
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(225).png)
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(227).png)
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(228).png)
 
 5. Verify Persistence<br>
     Stop everything:
@@ -115,7 +132,12 @@
     ```bash
     docker-compose up -d
     ```
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(232).png)
+
     - Go back to `http://localhost:8081`  our WordPress site and data should still be there.
+
+    ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(231).png)
 
     We now have a multi‑container application running with one command, and we've confirmed data persistence using a named volume.
 ## Task 4: Compose Commands
