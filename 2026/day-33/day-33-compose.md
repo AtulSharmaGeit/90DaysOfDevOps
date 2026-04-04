@@ -25,7 +25,7 @@
     - **ports:** Maps port `8081` on your machine - port `80` inside the container.
 3. Start the Container
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
     - This will pull the Nginx image (if not already present).
     - It will start the container and attach logs to your terminal.
@@ -42,7 +42,7 @@
 
 5. Stop and Clean Up
     ```bash
-    docker-compose down
+    docker compose down
     ```
     - This stops and removes the container and network created by Compose.
     - Our YAML file remains, so we can start it again anytime with `docker compose up`.
@@ -91,7 +91,7 @@
         - WordPress connects to MySQL using the service name `db`.
 3. Start the Containers
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
     - `-d` runs in detached mode.
     - Compose will pull images if not already present.
@@ -101,7 +101,7 @@
     ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(220).png)
 
     ```bash
-    docker-compose logs -f
+    docker compose logs -f
     ```
 
     ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(221).png)
@@ -124,13 +124,13 @@
 5. Verify Persistence<br>
     Stop everything:
     ```bash
-    docker-compose down
+    docker compose down
     ```
     - This removes containers and networks, but **not volumes**.
     
     Restart:
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 
     ![image alt](https://github.com/AtulSharmaGeit/90DaysOfDevOps/blob/f1185685f17b3ab67a432d5bbf6ce8755508d1ad/2026/day-33/Screenshots/Screenshot%20(232).png)
@@ -144,32 +144,32 @@
 1. Start Services in Detached Mode<br>
     Run containers in the background:
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
     - `-d` = detached mode (no logs in your terminal).
     - Useful for long‑running services.
 2. View Running Services<br>
     Check which services are up:
     ```bash
-    docker-compose ps
+    docker compose ps
     ```
     - Shows container names, status, and ports.
 3. View Logs of All Services<br>
     See combined logs:
     ```bash
-    docker-compose logs -f
+    docker compose logs -f
     ```
     - `-f` = follow logs live (like tail -f).
 4. View Logs of a Specific Service<br>
     Example for WordPress:
     ```bash
-    docker-compose logs -f wordpress
+    docker compose logs -f wordpress
     ```
     - Replace wordpress with the service name defined in our YAML.
 5. Stop Services Without Removing<br>
     Pause containers but keep networks/volumes intact:
     ```bash
-    docker-compose stop
+    docker compose stop
     ```
     - Containers stop, but we can restart them quickly with:
         ```bash
@@ -178,17 +178,17 @@
 6. Remove Everything (Containers + Networks)<br>
     Clean up completely:
     ```bash
-    docker-compose down
+    docker compose down
     ```
     - Removes containers and networks.
     - Named volumes persist unless we add -v:
         ```bash
-        docker-compose down -v
+        docker compose down -v
         ```
 7. Rebuild Images if We Make a Change<br>
     If we edit a Dockerfile or configuration:
     ```bash
-    docker-compose up --build -d
+    docker compose up --build -d
     ```
     - Forces rebuild of images before starting.
 
