@@ -109,12 +109,13 @@
 - Any `pull_request` opened against `master`
  
 ### How many jobs does it have?
-Three jobs:
-1. `lint` — runs Ruff (Python linter) and mypy (type checker)
-2. `test` — runs pytest across a matrix of **Python versions** (3.8, 3.9, 3.10, 3.11, 3.12) and **OS combinations** (Ubuntu + macOS), creating ~10 parallel job instances
-3. `coverage` — aggregates test results and uploads a coverage report to Codecov
+**Ans.** Three jobs:
+  1. `lint` — runs Ruff (Python linter) and mypy (type checker)
+  2. `test` — runs pytest across a matrix of **Python versions** (3.8, 3.9, 3.10, 3.11, 3.12) and **OS combinations** (Ubuntu + macOS), creating ~10 parallel job instances
+  3. `coverage` — aggregates test results and uploads a coverage report to Codecov
  
 ### What does it do?
+**Ans.**
 Every PR and merge to master triggers a full quality check: linting for code style, type checking for correctness, and a full test suite run across every supported Python version on multiple operating systems. This ensures FastAPI doesn't accidentally break compatibility with older Python versions and catches type errors that tests might miss. The coverage job ensures test coverage doesn't silently drop. A PR cannot be merged until all matrix jobs go green — which is exactly what CI is for.
  
 ---
