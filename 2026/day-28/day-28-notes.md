@@ -819,19 +819,25 @@ gh run watch                                     # watch current run live
 
 ---
 
-## Task 3: Quick-Fire Questions
+## Task 2: Quick-Fire Questions
 
 ---
 
 **1. What does `chmod 755 script.sh` do?**
 
-Sets the owner to `rwx` (read, write, execute), and group and others to `r-x` (read and execute — no write). The owner can edit and run it; everyone else can run it but not modify it. The standard permission for executable scripts and web server directories.
+**Ans.** Sets the owner to `rwx` (read, write, execute), and group and others to `r-x` (read and execute - no write).
+
+The owner can edit and run it; everyone else can run it but not modify it. The standard permission for executable scripts and web server directories.
 
 ---
 
-**2. What is the difference between a process and a service?**
+**2. What is the difference between a process and a service?**<br>
+**Ans.** <br>
+A **process** is any running program - a single instance of an executable, with its own PID, memory space, and CPU time. It exists for the duration of its execution and then exits.
 
-A **process** is any running program — a single instance of an executable, with its own PID, memory space, and CPU time. It exists for the duration of its execution and then exits. A **service** is a process designed to run continuously in the background, managed by systemd (or another init system). Services start automatically at boot, restart on failure, and have structured management commands. All services are processes, but not all processes are services.
+A **service** is a process designed to run continuously in the background, managed by systemd (or another init system). Services start automatically at boot, restart on failure, and have structured management commands.
+
+All services are processes, but not all processes are services.
 
 ---
 
@@ -849,8 +855,8 @@ All three show the PID and process name. `ss` is the modern standard; `lsof` giv
 
 ---
 
-**4. What does `set -euo pipefail` do in a shell script?**
-
+**4. What does `set -euo pipefail` do in a shell script?**<br>
+**Ans.**
 Three independent flags combined:
 - `-e` — the script exits immediately when any command returns a non-zero exit code, instead of silently continuing on failure.
 - `-u` — treats unset variables as errors. `echo $USERNMAE` (typo) would crash the script rather than silently expand to an empty string.
@@ -860,30 +866,30 @@ Together they make shell scripts behave like real programming languages with err
 
 ---
 
-**5. What is the difference between `git reset --hard` and `git revert`?**
+**5. What is the difference between `git reset --hard` and `git revert`?**<br>
+**Ans.**<br>
+`git reset --hard` moves the branch pointer backward and destroys any commits after that point. It rewrites history - if anyone else has pulled those commits, their repo now diverges from yours. Destructive, fast, only safe on local work you haven't shared.
 
-`git reset --hard` moves the branch pointer backward and destroys any commits after that point. It rewrites history — if anyone else has pulled those commits, their repo now diverges from yours. Destructive, fast, only safe on local work you haven't shared.
-
-`git revert` creates a *new commit* that applies the inverse of the commit you want to undo. History is preserved — the mistake and the fix are both visible. Safe to use on any branch, including shared ones, because it only adds to history rather than rewriting it.
-
----
-
-**6. What branching strategy would you recommend for a team of 5 developers shipping weekly?**
-
-**GitHub Flow.** Short-lived feature branches off `main`, merged via pull request with CI checks. A simple strategy that keeps everyone close to the main branch, avoids long-running merge conflicts, and maps naturally onto weekly releases. GitFlow's added complexity (`develop`, `release/*`) isn't worth it at this team size. Trunk-based development works too, but requires strong discipline and feature flag infrastructure that a small team might not have yet.
+`git revert` creates a *new commit* that applies the inverse of the commit you want to undo. History is preserved - the mistake and the fix are both visible. Safe to use on any branch, including shared ones, because it only adds to history rather than rewriting it.
 
 ---
 
-**7. What does `git stash` do and when would you use it?**
+**6. What branching strategy would you recommend for a team of 5 developers shipping weekly?**<br>
+**Ans.** **GitHub Flow.**<br>
+Short-lived feature branches off `main`, merged via pull request with CI checks. A simple strategy that keeps everyone close to the main branch, avoids long-running merge conflicts, and maps naturally onto weekly releases. GitFlow's added complexity (`develop`, `release/*`) isn't worth it at this team size. Trunk-based development works too, but requires strong discipline and feature flag infrastructure that a small team might not have yet.
 
+---
+
+**7. What does `git stash` do and when would you use it?**<br>
+**Ans.**<br>
 `git stash` saves your uncommitted changes (both staged and unstaged) onto a temporary stack and restores the working tree to a clean state matching HEAD. Your changes aren't lost — they're stashed and can be reapplied with `git stash pop`.
 
 **Use it when:** You're mid-feature and need to quickly switch branches to fix an urgent bug. Or when you want to pull the latest changes from remote but your uncommitted work would conflict with the merge.
 
 ---
 
-**8. How do you schedule a script to run every day at 3 AM?**
-
+**8. How do you schedule a script to run every day at 3 AM?**<br>
+**Ans.**
 ```bash
 crontab -e
 # Add the line:
@@ -894,8 +900,8 @@ The cron format is `minute hour day month weekday`. `0 3 * * *` means: at minute
 
 ---
 
-**9. What is the difference between `git fetch` and `git pull`?**
-
+**9. What is the difference between `git fetch` and `git pull`?**<br>
+**Ans.**<br>
 `git fetch` downloads new commits, branches, and tags from the remote but does **not** touch your working directory or current branch. It updates your remote-tracking references (`origin/main`) so you can see what changed without affecting your local work.
 
 `git pull` is `git fetch` followed immediately by a merge (or rebase, with `--rebase`) into your current branch. It downloads *and* integrates in one step.
@@ -904,8 +910,8 @@ The habit: `git fetch` when you want to see what's changed without risk. `git pu
 
 ---
 
-**10. What is LVM and why would you use it instead of regular partitions?**
-
+**10. What is LVM and why would you use it instead of regular partitions?**<br>
+**Ans.**
 LVM (Logical Volume Manager) is an abstraction layer between physical disks and filesystems. Instead of partitioning disks directly and being locked into fixed sizes, LVM lets you:
 
 - **Pool multiple disks** into a single Volume Group, then carve out Logical Volumes of any size from that pool.
@@ -917,7 +923,7 @@ With regular partitions, running out of disk space on `/var` means complex repar
 
 ---
 
-## Task 5: Teach It Back — File Permissions for a New Linux User
+## Task 3: Teach It Back — File Permissions for a New Linux User
 
 Imagine every file on your computer has a padlock with three separate keyholes: one for **you** (the owner), one for your **team** (a group), and one for **everyone else**. Linux file permissions are exactly that — three sets of rules controlling who can do what with each file.
 
