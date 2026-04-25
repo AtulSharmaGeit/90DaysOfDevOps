@@ -7,18 +7,18 @@ Reusable workflows can accept **inputs** (typed parameters), **secrets**, and re
 ### What is the `workflow_call` trigger?
 ```yaml
 on: 
-  workflow_call:  #special trigger used for reusable workflows, it allows other workflows to invoke this one and pass in inputs, secrets, and consume outputs
-    inputs:       #declare parameters that caller workflow must (or can) provide
+  workflow_call:                                                #special trigger used for reusable workflows, it allows other workflows to invoke this one and pass in inputs, secrets, and consume outputs
+    inputs:                                                     #declare parameters that caller workflow must (or can) provide
       app_name:
-        type: string  #value must be a string
-        required: true  #caller workflow must supply this input, otherwise reusable workflow won’t run
-    secrets:      #declare secrets that must be passed in from caller workflow, stored in repo’s Settings --> Secrets.
+        type: string                                            #value must be a string
+        required: true                                          #caller workflow must supply this input, otherwise reusable workflow won’t run
+    secrets:                                                    #declare secrets that must be passed in from caller workflow, stored in repo’s Settings --> Secrets.
       docker_token:
-        required: true  #caller workflow must provide this secret when invoking reusable workflow
-    outputs:      #declare values that this reusable workflow will expose back to caller workflow
+        required: true                                          #caller workflow must provide this secret when invoking reusable workflow
+    outputs:                                                    #declare values that this reusable workflow will expose back to caller workflow
       build_version:
-        value: ${{ jobs.build.outputs.build_version }}  #maps workflow’s output 'build_version' to output of 'build' job
-        #inside 'jobs.build' definition, we’ll have a step that sets 'build_version' (e.g., 'echo "build_version=v1.0-${SHORT_SHA}" >> $GITHUB_OUTPUT')- that step’s output is then surfaced here so caller workflow can read it.
+        value: ${{ jobs.build.outputs.build_version }}          #maps workflow’s output 'build_version' to output of 'build' job
+                                                                #inside 'jobs.build' definition, we’ll have a step that sets 'build_version' (e.g., 'echo "build_version=v1.0-${SHORT_SHA}" >> $GITHUB_OUTPUT')- that step’s output is then surfaced here so caller workflow can read it.
 ```
  
 **Ans.** `workflow_call` is a special event trigger that marks a workflow as *callable*. When this trigger is present, the workflow **will not run on its own** from push/PR events - it waits to be invoked by a caller workflow using `uses:`.
@@ -52,19 +52,19 @@ Create `.github/workflows/reusable-build.yml`:
 name: Reusable Build Workflow #human‑readable label, it shows up in Actions tab when workflow is called by another workflow
 
 on:
-  workflow_call:  #this workflow is triggered only when another workflow explicitly calls it
-    inputs: #defines parameters caller workflow must provide
-      app_name: #required string input, caller must pass application name
+  workflow_call:                                                                     #this workflow is triggered only when another workflow explicitly calls it
+    inputs:                                                                          #defines parameters caller workflow must provide
+      app_name:                                                                      #required string input, caller must pass application name
         description: "Name of the application"
         required: true
         type: string
-      environment:  #string input, it’s required, but has a default value of 'staging'
+      environment:                                                                   #string input, it’s required, but has a default value of 'staging'
         description: "Deployment environment"
         required: true
         type: string
         default: staging
-    secrets:  #declares sensitive values caller must provide
-      docker_token:   #required secret, caller workflow must pass in a Docker registry token
+    secrets:                                                                         #declares sensitive values caller must provide
+      docker_token:                                                                  #required secret, caller workflow must pass in a Docker registry token
         description: "Docker registry token"
         required: true
 
@@ -73,14 +73,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 #checks out our repo code so workflow has access to it
+        uses: actions/checkout@v4                                                    #checks out our repo code so workflow has access to it
 
-      - name: Print build info  #prints a message using inputs passed in by caller workflow
+      - name: Print build info                                                       #prints a message using inputs passed in by caller workflow
         run: echo "Building ${{ inputs.app_name }} for ${{ inputs.environment }}"
 
-      - name: Verify Docker token #verifies whether secret 'docker_token' was passed
+      - name: Verify Docker token                                                    #verifies whether secret 'docker_token' was passed
         run: |
-          if [ -n "${{ secrets.docker_token }}" ]; then #shell 'if' checks if it’s non‑empty (-n)
+          if [ -n "${{ secrets.docker_token }}" ]; then                              #shell 'if' checks if it’s non‑empty (-n)
             echo "Docker token is set: true"
           else
             echo "Docker token is set: false"
@@ -95,17 +95,17 @@ jobs:
 name: Caller Workflow
 
 on:
-  push:   #unlike reusable workflow, this one has a normal trigger so it shows up in Actions tab
+  push:                                                         #unlike reusable workflow, this one has a normal trigger so it shows up in Actions tab
     branches:
       - main
 
 jobs:
   build:
-    uses: ./.github/workflows/reusable-build.yml  #this job calls our reusable workflow located at '.github/workflows/reusable-build.yml'
-    with:   #inputs passed to reusable workflow
+    uses: ./.github/workflows/reusable-build.yml                #this job calls our reusable workflow located at '.github/workflows/reusable-build.yml'
+    with:                                                       #inputs passed to reusable workflow
       app_name: "my-web-app"
       environment: "production"
-    secrets:  #secrets passed to reusable workflow
+    secrets:                                                    #secrets passed to reusable workflow
       docker_token: ${{ secrets.DOCKER_TOKEN }}
 ```
 ### Add the secret in GitHub
@@ -138,11 +138,11 @@ jobs:
 ### Update reusable workflow
 Edit `.github/workflows/reusable-build.yml`.
 ```yaml
-name: Reusable Build Workflow #appears in Actions tab when invoked by a caller workflow
+name: Reusable Build Workflow                                                   #appears in Actions tab when invoked by a caller workflow
 
 on:
-  workflow_call:    #'workflow_call' makes this workflow reusable
-    inputs:         #parameters caller workflow must provide
+  workflow_call:                                                                #'workflow_call' makes this workflow reusable
+    inputs:                                                                     #parameters caller workflow must provide
       app_name:
         description: "Name of the application"
         required: true
@@ -156,15 +156,15 @@ on:
       docker_token:
         description: "Docker registry token"
         required: true
-    outputs:    #values this workflow exposes back to caller
-      build_version:    #maps to 'build_version' output of the 'build' job
+    outputs:                                                                     #values this workflow exposes back to caller
+      build_version:                                                             #maps to 'build_version' output of the 'build' job
         description: "Generated build version"
         value: ${{ jobs.build.outputs.build_version }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:    #declares a job output 'build_version', which comes from step with 'id: version'
+    outputs:                                                                     #declares a job output 'build_version', which comes from step with 'id: version'
       build_version: ${{ steps.version.outputs.build_version }}
     steps:
       - name: Checkout code
@@ -181,12 +181,12 @@ jobs:
             echo "Docker token is set: false"
           fi
 
-      - name: Generate build version  #generates a build version string using short commit SHA
-        id: version   #allows referencing this step’s outputs, later we reference 'steps.version.outputs.build_version' when defining job outputs - without an id we can’t access the step’s outputs
+      - name: Generate build version                                              #generates a build version string using short commit SHA
+        id: version                                                               #allows referencing this step’s outputs, later we reference 'steps.version.outputs.build_version' when defining job outputs - without an id we can’t access the step’s outputs
         run: |
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7) #takes full commit SHA (${GITHUB_SHA}) & slice the first 7 characters - Stores it in a variable 'SHORT_SHA'
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)                           #takes full commit SHA (${GITHUB_SHA}) & slice the first 7 characters - Stores it in a variable 'SHORT_SHA'
           echo "build_version=v1.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
-          # '$GITHUB_OUTPUT' is how we set outputs from a step in GitHub Actions. Here, the output name is 'build_version', and the value is 'v1.0-<short-sha>'. Because step has 'id: version', this output is now available as 'steps.version.outputs.build_version'.
+                                                                                  # '$GITHUB_OUTPUT' is how we set outputs from a step in GitHub Actions. Here, the output name is 'build_version', and the value is 'v1.0-<short-sha>'. Because step has 'id: version', this output is now available as 'steps.version.outputs.build_version'.
 ```
 ### Update caller workflow
 Edit `.github/workflows/call-build.yml`.
@@ -200,19 +200,20 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/reusable-build.yml  #instead of steps, it calls our reusable workflow located at '.github/workflows/reusable-build.yml'
-    with:   #passes inputs into reusable workflow
+    uses: ./.github/workflows/reusable-build.yml                                                    #instead of steps, it calls our reusable workflow located at '.github/workflows/reusable-build.yml'
+    with:                                                                                           #passes inputs into reusable workflow
       app_name: "my-web-app"
       environment: "production"
-    secrets:    #passes required secret into reusable workflow
+    secrets:                                                                                        #passes required secret into reusable workflow
       docker_token: ${{ secrets.DOCKER_TOKEN }}
 
   print-version:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Print build version   #prints 'build_version' output that was generated inside reusable workflow (Generate build version step).
+      - name: Print build version                                                                   #prints 'build_version' output that was generated inside reusable workflow (Generate build version step).
         run: echo "Build version from reusable workflow: ${{ needs.build.outputs.build_version }}"  #how our 'caller workflow' accesses output from reusable workflow’s 'build' job
+
         #${{ ... }} → GitHub Actions expression syntax. Anything inside is evaluated at runtime
         #'needs.build' → Refers to job named 'build' in our caller workflow, because our 'print-version' job has 'needs: build', it can access outputs from that job
         #'outputs.build_version' → Refers to specific output we exposed in reusable workflow
@@ -247,29 +248,29 @@ git push origin main
 ### Create a action file `.github/actions/setup-and-greet/action.yml`
 ```yaml
 name: "Setup and Greet"
-description: "Custom composite action to greet user"  #short explanation of what action does
+description: "Custom composite action to greet user"          #short explanation of what action does
 
-inputs:   #defines parameters action accepts
-  name:   #required input, Caller must provide a name
+inputs:                                                       #defines parameters action accepts
+  name:                                                       #required input, Caller must provide a name
     description: "Name to greet"
     required: true
-  language:   #Optional input, defaults to "en" - Caller can override with "es" or "fr"
+  language:                                                   #Optional input, defaults to "en" - Caller can override with "es" or "fr"
     description: "Language for greeting"
     required: false
     default: "en"
 
-outputs:    #defines values action exposes back to workflow
-  greeted:  #output flag
+outputs:                                                      #defines values action exposes back to workflow
+  greeted:                                                    #output flag
     description: "Whether greeting was printed"
-    value: ${{ steps.greet.outputs.greeted }} #maps to output set by step with 'id: greet'
+    value: ${{ steps.greet.outputs.greeted }}                 #maps to output set by step with 'id: greet'
 
-runs:   #defines how action executes
-  using: "composite"    #this action is a composite action (runs multiple steps defined here)
-  steps:    #list of steps that make up action
+runs:                                                         #defines how action executes
+  using: "composite"                                          #this action is a composite action (runs multiple steps defined here)
+  steps:                                                      #list of steps that make up action
     - name: Print greeting
-      id: greet   #identifier so its outputs can be referenced
+      id: greet                                               #identifier so its outputs can be referenced
       run: |
-        if [ "${{ inputs.language }}" = "en" ]; then  #conditional logic → chooses greeting based on 'inputs.language'
+        if [ "${{ inputs.language }}" = "en" ]; then          #conditional logic → chooses greeting based on 'inputs.language'
           echo "Hello, ${{ inputs.name }}!"
         elif [ "${{ inputs.language }}" = "es" ]; then
           echo "¡Hola, ${{ inputs.name }}!"
@@ -278,10 +279,10 @@ runs:   #defines how action executes
         else
           echo "Hello, ${{ inputs.name }}!"
         fi
-        echo "greeted=true" >> $GITHUB_OUTPUT #sets step output 'greeted=true', this is what connects to outputs block above
-      shell: bash   #runs script in Bash
+        echo "greeted=true" >> $GITHUB_OUTPUT                 #sets step output 'greeted=true', this is what connects to outputs block above
+      shell: bash                                             #runs script in Bash
 
-    - name: Print date and OS   #useful for debugging and confirming environment details
+    - name: Print date and OS                                 #useful for debugging and confirming environment details
       run: |
         echo "Current date: $(date)"
         echo "Runner OS: $RUNNER_OS"
@@ -305,15 +306,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run setup-and-greet 
-        id: greet   #assigns an identifier to this step so its outputs can be referenced later
-        uses: ./.github/actions/setup-and-greet #points to folder containing 'action.yml'
-        with:   #passes inputs into action
-          name: "Atul"    #required input
+        id: greet                                                               #assigns an identifier to this step so its outputs can be referenced later
+        uses: ./.github/actions/setup-and-greet                                 #points to folder containing 'action.yml'
+        with:                                                                   #passes inputs into action
+          name: "Atul"                                                          #required input
           language: "en"
 
-      - name: Verify output   #prints output from composite action
-        run: echo "Greeting completed: ${{ steps.greet.outputs.greeted }}"
-        #${{ steps.greet.outputs.greeted }} → references output greeted from step with 'id: greet'
+      - name: Verify output                                                     #prints output from composite action
+        run: echo "Greeting completed: ${{ steps.greet.outputs.greeted }}"      #${{ steps.greet.outputs.greeted }} → references output greeted from step with 'id: greet'
 ```
 ### Commit and push
 ```bash
