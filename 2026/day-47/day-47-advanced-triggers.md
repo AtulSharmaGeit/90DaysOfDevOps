@@ -499,7 +499,7 @@ Or with `curl`:
 ```bash
 curl -X POST \
   -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer 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" \
+  -H "Authorization: Bearer personal-access-token" \
   https://api.github.com/repos/atulsharmadevops/github-actions-practice/dispatches \
   -d '{"event_type":"deploy-request","client_payload":{"environment":"staging"}}'
 ```
