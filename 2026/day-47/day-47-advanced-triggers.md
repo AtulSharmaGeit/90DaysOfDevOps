@@ -5,26 +5,26 @@
 name: PR Lifecycle Events
 
 on:
-  pull_request:       #it runs when something happens to a Pull Request
+  pull_request:                                       #it runs when something happens to a Pull Request
     types: [opened, synchronize, reopened, closed]    #filters which PR events trigger it
 
 jobs:
   pr-info:
     runs-on: ubuntu-latest
     steps:
-      - name: Print event type    #prints PR event type (e.g., opened, synchronize, etc.)
+      - name: Print event type                        #prints PR event type (e.g., opened, synchronize, etc.)
         run: echo "Event type: ${{ github.event.action }}"
 
-      - name: Print PR title    #prints title of PR
+      - name: Print PR title                          #prints title of PR
         run: echo "Title: ${{ github.event.pull_request.title }}"
 
-      - name: Print PR author     #prints GitHub username of person who opened PR
+      - name: Print PR author                         #prints GitHub username of person who opened PR
         run: echo "Author: ${{ github.event.pull_request.user.login }}"
 
       - name: Print branches
         run: echo "Source: ${{ github.head_ref }} -> Target: ${{ github.base_ref }}"
 
-      - name: Run only if merged    #this step runs only if PR was merged (not just closed)
+      - name: Run only if merged                      #this step runs only if PR was merged (not just closed)
         if: github.event.pull_request.merged == true
         run: echo "This PR was merged!"
 ```
@@ -135,18 +135,18 @@ Closed + Merged Event
 name: PR Validation Checks
 
 on:
-  pull_request:     #runs whenever a Pull Request targets 'main' branch
+  pull_request:                               #runs whenever a Pull Request targets 'main' branch
     branches: [main]
 
 jobs:
   file-size-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4   #pulls our repo code into runner
+      - uses: actions/checkout@v4             #pulls our repo code into runner
       - name: Check file sizes
         run: |
-          for f in $(git ls-files); do    #goes through all tracked files (git ls-files)
-            size=$(stat -c%s "$f")      #(stat -c%s "$f") --> gets file size in bytes
+          for f in $(git ls-files); do        #goes through all tracked files (git ls-files)
+            size=$(stat -c%s "$f")            #(stat -c%s "$f") --> gets file size in bytes
             if [ $size -gt 1048576 ]; then    #if any file is larger than 1048576 bytes (1 MB), it prints a message and fails the job
               echo "File $f exceeds 1MB"
               exit 1
@@ -158,7 +158,7 @@ jobs:
     steps:
       - name: Validate branch name
         run: |
-          BRANCH=${{ github.head_ref }}   #(github.head_ref) --> gives source branch name of PR
+          BRANCH=${{ github.head_ref }}                       #(github.head_ref) --> gives source branch name of PR
           if [[ ! $BRANCH =~ ^(feature|fix|docs)/ ]]; then    #Regex check --> branch must start with feature/, fix/, or docs/
             echo "Branch name invalid: $BRANCH"
             exit 1
@@ -170,11 +170,11 @@ jobs:
     steps:
       - name: Check PR body
         run: |
-          BODY="${{ github.event.pull_request.body }}"    #(github.event.pull_request.body) --> contains PR description text
+          BODY="${{ github.event.pull_request.body }}"        #(github.event.pull_request.body) --> contains PR description text
 
 
           if [ -z "$BODY" ]; then
-            echo "Warning: PR description is empty"   #if empty --> prints a warning (but does not fail)
+            echo "Warning: PR description is empty"           #if empty --> prints a warning (but does not fail)
           else
             echo "PR description present"
           fi
@@ -305,10 +305,10 @@ name: Smart Triggers
 
 on:
   push:
-    branches:     #only triggers if push is to 'main' or any branch starting with 'release/'
+    branches:                 #only triggers if push is to 'main' or any branch starting with 'release/'
       - main
       - release/*
-    paths:        #workflow only runs if files inside 'src/' or 'app/' change
+    paths:                    #workflow only runs if files inside 'src/' or 'app/' change
       - 'src/**'
       - 'app/**'
 
@@ -327,7 +327,7 @@ on:
     branches:
       - main
       - release/*
-    paths-ignore:     #tells GitHub Actions to ignore pushes that only change - markdown files (*.md) & anything inside the docs/ folder
+    paths-ignore:              #tells GitHub Actions to ignore pushes that only change - markdown files (*.md) & anything inside the docs/ folder
       - '*.md'
       - 'docs/**'
 
@@ -409,9 +409,9 @@ jobs:
 name: Deploy After Tests
 
 on:
-  workflow_run:         #special trigger that listens for another workflow
-    workflows: ["Run Tests"]    #this workflow runs only after workflow named Run Tests completes
-    types: [completed]    #triggers regardless of whether Run Tests succeeded or failed
+  workflow_run:                                                                      #special trigger that listens for another workflow
+    workflows: ["Run Tests"]                                                         #this workflow runs only after workflow named Run Tests completes
+    types: [completed]                                                               #triggers regardless of whether Run Tests succeeded or failed
 
 jobs:
   deploy:
@@ -419,8 +419,8 @@ jobs:
     steps:
       - name: Check triggering workflow
         run: |
-          echo "Triggered by workflow: ${{ github.event.workflow_run.name }}"   #prints name of workflow that triggered this one
-          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"    #prints conclusion (success, failure, cancelled)
+          echo "Triggered by workflow: ${{ github.event.workflow_run.name }}"         #prints name of workflow that triggered this one
+          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"              #prints conclusion (success, failure, cancelled)
 
           if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
             echo "Tests failed, skipping deploy"
@@ -470,8 +470,8 @@ jobs:
 name: External Trigger
 
 on:
-  repository_dispatch:      #special event type that lets us trigger workflows manually via GitHub API or CLI
-    types: [deploy-request]   #this workflow only runs when event type is deploy-request
+  repository_dispatch:                #special event type that lets us trigger workflows manually via GitHub API or CLI
+    types: [deploy-request]           #this workflow only runs when event type is deploy-request
 
 jobs:
   external:
