@@ -16,18 +16,18 @@ A hands-on introduction to writing Kubernetes manifests, running our first pods,
 ## Create Our First Pod (Nginx)
 ### Create a file called `nginx-pod.yaml`:
 ```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-pod
-  labels:
+apiVersion: v1            #tells K8s which API group to use - for Pods - it is v1
+kind: Pod                 #resource type - today it is Pod - later we will use Deployment, Service, etc.
+metadata:                 #identity of our resource
+  name: nginx-pod         #required field
+  labels:                 #key-value pairs used for organization and selection
     app: nginx
-spec:
-  containers:
-  - name: nginx
-    image: nginx:latest
+spec:                     #desired state -for a Pod - this means which containers to run, which images, which ports, etc.
+  containers:             #list of containers that will run inside pod
+  - name: nginx           #logical name for container
+    image: nginx:latest   #container image to run, pulled from Docker Hub - latest tag means it will always fetch newest version
     ports:
-    - containerPort: 80
+    - containerPort: 80   #declares that this container listens on port 80 (default HTTP). This is metadata for Kubernetes; it doesn’t expose port outside pod by itself, but it helps when we later create a Service.
 ```
 Apply the manifest:
 ```bash
@@ -84,13 +84,16 @@ kind: Pod
 metadata:
   name: busybox-pod
   labels:
-    app: busybox
-    environment: dev
+    app: busybox    #groups this pod under BusyBox app
+    environment: dev  #marks this pod as part of development environment
 spec:
   containers:
   - name: busybox
     image: busybox:latest
-    command: ["sh", "-c", "echo Hello from BusyBox && sleep 3600"]
+    command: ["sh", "-c", "echo Hello from BusyBox && sleep 3600"]  #overrides default container command.
+                                                                    #runs a shell (sh) with -c flag to execute a command string
+                                                                    #prints "Hello from BusyBox" to logs
+                                                                    #sleeps for 3600 seconds (1 hour) to keep container alive
 ```
 
 Apply the manifest:
@@ -293,7 +296,7 @@ kubectl apply -f demo-pod.yaml
   ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/0558902c53265dc0d62396938db45eca5b9f945a/2026/day-51/Screenshots/Screenshot%20(632).png)
 
 ### Clean Up
-- Delete all the pods you created:
+- Delete all the pods we created:
     ```bash
     # Delete by name
     kubectl delete pod nginx-pod
