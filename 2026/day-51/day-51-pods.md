@@ -1,6 +1,8 @@
 # Kubernetes Manifests and Your First Pods
 A hands-on introduction to writing Kubernetes manifests, running our first pods, and understanding declarative vs imperative resource management.
  
+A **Kubernetes manifest** is simply a YAML (or JSON) file that describes the desired state of a Kubernetes resource.
+
 ---
  
 ## Table of Contents
