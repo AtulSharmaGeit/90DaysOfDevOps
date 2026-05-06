@@ -86,8 +86,8 @@ kind: Pod
 metadata:
   name: busybox-pod
   labels:
-    app: busybox    #groups this pod under BusyBox app
-    environment: dev  #marks this pod as part of development environment
+    app: busybox                                                    #groups this pod under BusyBox app
+    environment: dev                                                #marks this pod as part of development environment
 spec:
   containers:
   - name: busybox
