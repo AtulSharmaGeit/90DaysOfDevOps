@@ -263,7 +263,7 @@ kubectl get nodes
 
 Later, we can experiment with `minikube` when we want to explore addons, simulate VM drivers, or practice multi-node setups.
 
-## Explore Our Cluster
+## 3. Explore Our Cluster
 ### See cluster info
 ```bash
 kubectl cluster-info
@@ -320,7 +320,7 @@ The pods running in `kube-system` are the exact components from the architecture
 | `coredns-*` | DNS-based service discovery inside the cluster |
 | `kube-proxy-*` | Manages networking rules for pod communication |
 
-## Practice Cluster Lifecycle
+## 4. Practice Cluster Lifecycle
 ### Delete cluster
 ```bash
 kind delete cluster --name devops-cluster
