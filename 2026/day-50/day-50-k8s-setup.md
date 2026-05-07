@@ -188,7 +188,7 @@ The API server is the cluster's central communication hub. Its failure has a sig
  
 
 # Local Cluster Setup
-## 1. Install kubectl
+## Install kubectl
 `kubectl` is the CLI tool that lets us talk to our Kubernetes cluster. 
 ### For Linux (amd64)
 ```bash
@@ -206,7 +206,7 @@ sudo mv kubectl /usr/local/bin/
 
     ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/b0157be9e68ef09b5361a9288a529bd990d84b7f/2026/day-50/Screenshots/Screenshot%20(573).png)
 
-## 2. Set Up Our Local Cluster
+## Set Up Our Local Cluster
 For our **local Kubernetes cluster setup**, we have two solid options:
 
 ### Option A: kind (Kubernetes in Docker)
@@ -263,7 +263,7 @@ kubectl get nodes
 
 Later, we can experiment with `minikube` when we want to explore addons, simulate VM drivers, or practice multi-node setups.
 
-## 3. Explore Our Cluster
+## Explore Our Cluster
 ### See cluster info
 ```bash
 kubectl cluster-info
@@ -320,7 +320,7 @@ The pods running in `kube-system` are the exact components from the architecture
 | `coredns-*` | DNS-based service discovery inside the cluster |
 | `kube-proxy-*` | Manages networking rules for pod communication |
 
-## 4. Practice Cluster Lifecycle
+## Practice Cluster Lifecycle
 ### Delete cluster
 ```bash
 kind delete cluster --name devops-cluster
