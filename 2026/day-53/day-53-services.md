@@ -15,9 +15,9 @@ A hands-on guide to exposing applications inside and outside a Kubernetes cluste
 Every Pod gets its own IP address, but two problems make Pod IPs unreliable:
  
 1. **Pod IPs are not stable** - when a Pod restarts or is replaced, it gets a new IP
-2. **Deployments run multiple Pods** - there is no single IP to connect to
+2. **Deployments run multiple Pods** - there is no single IP to connect to.
+
 A Service solves both problems by providing:
- 
 - A **stable IP and DNS name** that never changes, regardless of Pod restarts
 - **Automatic load balancing** across all healthy Pods that match its selector
 ```
