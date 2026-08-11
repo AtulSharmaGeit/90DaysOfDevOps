@@ -1,5 +1,5 @@
 # Introduction to Agentic AI for DevOps
->We have built the entire DevOps pipeline -- Linux, Docker, CI/CD, Kubernetes, Terraform, Ansible, observability, Helm, EKS, and GitOps. Now we add AI to it. Agentic AI is not about chatbots. It is about building autonomous agents that can inspect our infrastructure, diagnose problems, and fix them -- using the same CLI tools we use every day (docker, kubectl, gh).
+>We have built the entire DevOps pipeline -- Linux, Docker, CI/CD, Kubernetes, Terraform, Ansible, observability, Helm, EKS, and GitOps. Now we add AI to it. Agentic AI is not about chatbots. It is about building autonomous agents that can inspect our infrastructure, diagnose problems, and fix them using the same CLI tools we use every day (docker, kubectl, gh).
 
 Today we set up our environment, make our first LLM call, and build our first AI agent that troubleshoots Docker containers on its own.
 
@@ -18,7 +18,7 @@ Reference: https://github.com/TrainWithShubham/agentic-ai-for-devops
 An AI agent is an LLM that can use **tools** to interact with the real world. Unlike a chatbot that only generates text, an agent can run commands, read files, and call APIs. The LLM decides which tool to use and with what arguments, based on the task at hand.
  
 ### Why Agents for DevOps?
-DevOps is tool-heavy: `docker`, `kubectl`, `terraform`, `gh`, `ansible` — all CLI-based, all producing structured text output that an LLM can read and reason about. An agent wraps these CLIs as tools and lets the LLM reason over their output.
+DevOps is tool-heavy: `docker`, `kubectl`, `terraform`, `gh`, `ansible` ,  all CLI-based, all producing structured text output that an LLM can read and reason about. An agent wraps these CLIs as tools and lets the LLM reason over their output.
  
 Example flow:
 ```
@@ -52,26 +52,27 @@ THINK:   The container exits immediately — I have enough to explain this
 ANSWER:  "The container crashes because its entrypoint command
           exits with code 1 after approximately 2 seconds..."
 ```
-The LLM decides which tools to call and in what order. You never prescribe the investigation steps.
+The LLM decides which tools to call and in what order. We never prescribe the investigation steps.
  
 ### Key Components
 | Component | Role | Technology |
 |---|---|---|
-| **LLM** | The brain — reasoning and decision-making | Ollama + Gemma 4 (local), or Claude / GPT for production |
-| **Tools** | The hands — Python functions wrapping CLI commands | `subprocess.run(["docker", ...])` |
+| **LLM** | The brain - reasoning and decision-making | Ollama + Gemma 4 (local), or Claude / GPT for production |
+| **Tools** | The hands - Python functions wrapping CLI commands | `subprocess.run(["docker", ...])` |
 | **Agent framework** | Orchestrates the ReAct reasoning loop | LangChain's `create_react_agent` |
 | **MCP** | Standard protocol for exposing tools to any AI client | FastMCP (covered on Day 88) |
 
 ## 2. Set Up the Environment
 ### Clone the Reference Repository
-This repo contains all the modules you’ll need.
+This repo contains all the modules we’ll need.
 ```bash
+sudo apt update && sudo apt upgrade -y
 git clone https://github.com/TrainWithShubham/agentic-ai-for-devops.git
 cd agentic-ai-for-devops
 ```
 
 ### Install Ollama (Local LLM Runtime)
-Ollama runs LLMs locally — no API keys, no cloud cost, no data leaving your machine.
+Ollama runs LLMs locally - no API keys, no cloud cost, no data leaving our machine.
 ```bash
 # macOS
 brew install ollama
@@ -83,6 +84,8 @@ curl -fsSL https://ollama.com/install.sh | sh
 ollama --version
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1789).png)
+
 ### Start Ollama and Pull the Gemma 4 Model
 ```bash
 # Starts Ollama in the background
@@ -92,14 +95,18 @@ ollama serve &
 ollama pull gemma4
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1791).png)
+
 Verify:
 ```bash
 ollama list
 # Should show gemma4 in the list
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1794).png)
+
 ### Set Up Python Environment
-Create a virtual environment so dependencies don’t pollute your system Python.
+Create a virtual environment so dependencies don’t pollute our system Python.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -110,6 +117,12 @@ pip install -r requirements.txt
 which python
 # Expected: .../agentic-ai-for-devops/.venv/bin/python
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1796).png)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1797).png)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1799).png)
 
 ### Understand Installed Dependencies
 The `requirements.txt` installs:
@@ -122,26 +135,20 @@ The `requirements.txt` installs:
 | `langchain-mcp-adapters` | Bridges MCP tools into LangChain agents |
 
 ### Run Pre-flight Check
-This script ensures your environment is ready.
+This script ensures our environment is ready.
 ```bash
 python3 module-0/verify_setup.py
 ```
+We should see:
 
-You should see:
-```
-  [PASS] Python 3.10+
-  [PASS] Docker
-  [PASS] kubectl
-  [PASS] Kind
-  [PASS] Ollama + gemma4
-
-  5/5 -- you're ready for Day 1!
-```
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1801).png)
 
 **If any FAIL**: Fix before proceeding (e.g., install Docker, configure kubectl, ensure Kind cluster works, restart Ollama).
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1804).png)
+
 ## 3. Build the Docker Error Explainer (Module 1)
-This is the simplest possible LLM usage — no agents, no tools, no reasoning loop. You paste a Docker error and the LLM explains it in plain English.
+This is the simplest possible LLM usage - no agents, no tools, no reasoning loop. We paste a Docker error and the LLM explains it in plain English.
 
 ### Open the Explainer Script
 Navigate into the repo:
@@ -149,7 +156,9 @@ Navigate into the repo:
 cd module-1
 cat explainer.py
 ```
-You’ll see the code that defines the **system prompt** and makes a call to Ollama.
+We’ll see the code that defines the **system prompt** and makes a call to Ollama.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1806).png)
 
 ### Understand the System Prompt
 The script sets:
@@ -177,7 +186,7 @@ response = ollama.chat(
 ```
 - **Model**: Gemma 4 (local via Ollama).
 - **Messages**: System prompt + user error.
-- `Temperature: 0.3` → keeps responses deterministic and technical — higher values produce more creative but less reliable answers. For diagnostic tooling, keep it low.
+- `Temperature: 0.3` → keeps responses deterministic and technical - higher values produce more creative but less reliable answers. For diagnostic tooling, keep it low.
 - No tools, no agent loop -- just a single LLM call
 
 ### Run the Explainer
@@ -189,23 +198,32 @@ Paste one of these errors when prompted:
 ```
 docker: Error response from daemon: Conflict. The container name "/myapp" is already in use.
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1815).png)
+
 Or:
 ```
 Error response from daemon: driver failed programming external connectivity on endpoint myapp:
 Bind for 0.0.0.0:8080 failed: port is already allocated.
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1819).png)
+
 Or:
 ```
 Error response from daemon: pull access denied for mycompany/private-app, repository does not
 exist or may require 'docker login'.
 ```
-The LLM explains the root cause and provides the exact commands to fix it — no Googling required.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1821).png)
+
+The LLM explains the root cause and provides the exact commands to fix it -- no Googling required.
 
 ### How does the system prompt affect the quality of the response? Try changing it and see what happens.
-**Ans.** The system prompt defines the LLM's persona and output format. Changing it dramatically changes the quality and style of responses — try replacing "Docker expert" with "site reliability engineer" or removing the numbered format to see the difference.
+**Ans.** The system prompt defines the LLM's persona and output format. Changing it dramatically changes the quality and style of responses - try replacing "Docker expert" with "site reliability engineer" or removing the numbered format to see the difference.
 
 ## 4. Build the Docker Troubleshooter Agent (Module 2)
-Now the real thing — an agent that autonomously uses tools to diagnose Docker issues without being told which commands to run.
+Now the real thing - an agent that autonomously uses tools to diagnose Docker issues without being told which commands to run.
 
 ### Create a Broken Container
 We need something for the agent to diagnose.
@@ -219,8 +237,13 @@ docker ps -a | grep broken-app
 - This container starts, prints “app starting…”, waits 2 seconds, then exits with code 1.
 - Docker will keep restarting it → similar to **CrashLoopBackOff** in Kubernetes.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1822).png)
+
 ### Study the Agent Tools
 Open `module-2/agent.py`. Three tools are defined:
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1825).png)
+
 ```python
 @tool
 def list_containers() -> str:
@@ -254,9 +277,9 @@ def inspect_container(container_name: str) -> str:
 | Element | Purpose |
 |---|---|
 | `@tool` decorator | Registers the function with LangChain as an available tool |
-| Docstring | **Critical** — the LLM reads this to decide when to call the tool. Poor docstrings lead to incorrect tool selection |
+| Docstring | **Critical** - the LLM reads this to decide when to call the tool. Poor docstrings lead to incorrect tool selection |
 | `subprocess.run` | Executes the actual CLI command in a subprocess |
-| Return value | stdout/stderr as a string — what the LLM reads in the Observe step |
+| Return value | stdout/stderr as a string - what the LLM reads in the Observe step |
 
 ### Create the Agent
 The agent is defined like this:
@@ -265,7 +288,7 @@ llm = ChatOllama(model="gemma4", temperature=0)
 tools = [list_containers, get_logs, inspect_container]
 agent = create_react_agent(llm, tools)
 ```
-- `temperature=0` is appropriate here — you want reproducible, deterministic diagnostic reasoning, not creative variation.
+- `temperature=0` is appropriate here - we want reproducible, deterministic diagnostic reasoning, not creative variation.
 - `create_react_agent` builds the ReAct loop: the LLM reasons about the problem, picks a tool, calls it, reads the result, and repeats until it has an answer.
 
 ### Run the Agent
@@ -273,19 +296,19 @@ Execute:
 ```bash
 python3 module-2/agent.py
 ```
-
 Ask it:
 ```
 > Why is broken-app crashing?
 ```
-
 Watch the agent's reasoning:
 1. It calls `list_containers()` → sees `broken-app` in "Restarting" state
 2. It calls `get_logs("broken-app")` → sees "app starting..." then exit
 3. It calls `inspect_container("broken-app")` → sees exit code 1
 4. It answers: "The container crashes because the command exits with code 1..."
 
-**The LLM decided which tools to call and in what order.** You never told it to check logs — it reasoned that logs are the right next step after confirming the restart state.
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1831).png)
+
+**The LLM decided which tools to call and in what order.** We never told it to check logs - it reasoned that logs are the right next step after confirming the restart state.
 
 ### Try More Questions
 Experiment with queries:
@@ -296,11 +319,15 @@ Experiment with queries:
 ```
 The agent will autonomously pick the right tool and respond.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1837).png)
+
 ### Clean Up
 When finished:
 ```bash
 docker rm -f broken-app
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1840).png)
 
 ## 5. Understand the Agent Architecture
 
@@ -327,9 +354,9 @@ docker rm -f broken-app
 ```
  
 ### Why This Pattern Matters for DevOps
-**Ans.** The architecture is domain-agnostic. Replace Docker tools with Kubernetes tools (`kubectl get pods`, `kubectl describe`, `kubectl logs`) and the same ReAct loop diagnoses Kubernetes failures. Replace them with Terraform or AWS CLI tools and it analyses infrastructure state. The reasoning engine stays the same — only the tools change.
+**Ans.** The architecture is domain-agnostic. Replace Docker tools with Kubernetes tools (`kubectl get pods`, `kubectl describe`, `kubectl logs`) and the same ReAct loop diagnoses Kubernetes failures. Replace them with Terraform or AWS CLI tools and it analyses infrastructure state. The reasoning engine stays the same - only the tools change.
  
-On Day 88, you will add Kubernetes tools to this same agent. On Day 89, you will add production guardrails and build an agent that automatically fixes broken pods.
+On Day 88, we will add Kubernetes tools to this same agent. On Day 89, we will add production guardrails and build an agent that automatically fixes broken pods.
  
 ### The Tool Template
 Every agent tool follows the same structure:
@@ -367,6 +394,8 @@ Include the new tool in the agent’s toolset.
     tools = [list_containers, get_logs, inspect_container, list_images]
     ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1842).png)
+
 ### Run agent with new tool
 Test the agent’s ability to call the new tool.
 - Execute:
@@ -378,6 +407,8 @@ Test the agent’s ability to call the new tool.
     “What images do I have and how much space are they using?”
     ```
 - Observe agent calling `list_images()`, our new tool.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1844).png)
 
 ### Add `restart_container` tool
 Create a tool to restart containers, but note safety implications.
@@ -394,14 +425,20 @@ Create a tool to restart containers, but note safety implications.
     tools = [list_containers, get_logs, inspect_container, list_images, restart_container]
     ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1847).png)
+
 ### Test restart functionality
 Verify the agent can restart a container.
 - Run agent again
 - Ask: “broken-app keeps crashing, can you restart it?”
 - Observe agent calling `restart_container()`
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1852).png)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/ce84fdce898a79384f270f6aa0739ee8d8673d17/2026/day-87/Screenshots/Screenshot%20(1872).png)
+
 ### Safety Considerations
-The `restart_container` tool can restart any container on the system, including system-critical ones. In production, you need explicit guardrails:
+The `restart_container` tool can restart any container on the system, including system-critical ones. In production, we need explicit guardrails:
 | Guardrail | Implementation |
 |---|---|
 | **Allowlist** | Only restart containers matching a known prefix or label |
@@ -409,4 +446,4 @@ The `restart_container` tool can restart any container on the system, including 
 | **Dry-run mode** | Log what would happen without executing |
 | **Audit logging** | Record every tool call with timestamp and arguments |
  
-Giving an agent write access to any system requires explicit safety boundaries — the same principle as IAM least privilege, applied to AI tool use. Day 89 covers production-grade agent guardrails in depth.
+Giving an agent write access to any system requires explicit safety boundaries - the same principle as IAM least privilege, applied to AI tool use. Day 89 covers production-grade agent guardrails in depth.
