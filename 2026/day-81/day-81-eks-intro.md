@@ -13,17 +13,17 @@ Amazon EKS (Elastic Kubernetes Service) is AWS's managed Kubernetes offering. Th
 
 ## 1. Understand EKS Architecture
 ### Managed vs. Self-Managed Kubernetes
-EKS is AWS's managed Kubernetes offering. The key distinction from self-managed Kubernetes is which parts of the cluster you are responsible for:
+EKS is AWS's managed Kubernetes offering. The key distinction from self-managed Kubernetes is which parts of the cluster we are responsible for:
 | Layer | Managed by |
 |---|---|
 | API server, etcd, scheduler, controller manager | **AWS** - patched, upgraded, and HA across multiple AZs automatically |
-| Worker nodes (EC2 instances running your pods) | **You** - provisioned via node groups |
+| Worker nodes (EC2 instances running our pods) | **We** - provisioned via node groups |
  
 ### EKS Node Group Types
 | Type | Description | When to Use |
 |---|---|---|
 | **Managed Node Groups** | AWS handles provisioning, scaling, AMI updates, and draining | Most production workloads |
-| **Self-Managed Nodes** | You own the EC2 lifecycle | Custom AMIs or deep OS customisation |
+| **Self-Managed Nodes** | We own the EC2 lifecycle | Custom AMIs or deep OS customisation |
 | **Fargate Profiles** | Serverless - no nodes to manage at all | Bursty, lightweight workloads |
  
 The AI-BankApp uses **Managed Node Groups** on AL2023 AMI.
@@ -41,10 +41,13 @@ The AI-BankApp uses **Managed Node Groups** on AL2023 AMI.
 ## 2. Study the AI-BankApp Terraform Configuration
 ### Clone the Repo and Examine the `terraform/` Directory:
 ```bash
+sudo apt update && sudo apt upgrade -y
 git clone -b feat/gitops https://github.com/TrainWithShubham/AI-BankApp-DevOps.git
 cd AI-BankApp-DevOps/terraform
 ls
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2043).png)
 
 ### File Inventory
 | File | What It Provisions |
@@ -58,16 +61,13 @@ ls
 | `outputs.tf` | `aws eks update-kubeconfig` command, ArgoCD password retrieval command |
 
 ### Default Variable Values (`terraform.tfvars`)
-```hcl
-aws_region         = "us-west-2"
-cluster_name       = "bankapp-eks"
-cluster_version    = "1.35"
-node_instance_type = "t3.medium"
-node_desired_count = 3
-node_max_count     = 5
-```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2047).png)
  
 ### VPC Design (`vpc.tf`)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2048).png)
+
 Uses the `terraform-aws-modules/vpc/aws` module across 3 Availability Zones:
 | Subnet Type | CIDR Range | Purpose | Load Balancer Tag |
 |---|---|---|---|
@@ -78,6 +78,9 @@ Uses the `terraform-aws-modules/vpc/aws` module across 3 Availability Zones:
 The subnet tags are required for the AWS Load Balancer Controller to automatically discover which subnets to use when creating load balancers from Kubernetes Service and Ingress objects.
  
 ### EKS Cluster (`eks.tf`)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2050).png)
+
 - Module: `terraform-aws-modules/eks/aws` (~> 21.0)
 - Node AMI: AL2023 (Amazon Linux 2023)
 - Node type: `t3.medium`, desired 3 / max 5
@@ -86,6 +89,9 @@ The subnet tags are required for the AWS Load Balancer Controller to automatical
 - Both public and private API endpoint access enabled
 
 ### ArgoCD (`argocd.tf`)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2052).png)
+
 - Installed via the `argo-cd` Helm chart
 - Exposed as a `LoadBalancer` Service — provisions an AWS Classic or NLB automatically
 - Declared with a `depends_on` the EKS module, ensuring it is installed only after the cluster and node group are fully ready
@@ -116,6 +122,8 @@ kubectl version --client
 helm version
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2053).png)
+
 ### Configure AWS Credentials:
 ```bash
 aws configure
@@ -124,20 +132,28 @@ aws configure
 # Verify
 aws sts get-caller-identity
 ```
-Expected output includes your AWS account ID, user ARN, and user ID. If this fails, your credentials are not configured correctly — do not proceed to `terraform apply`.
+Expected output includes our AWS account ID, user ARN, and user ID. If this fails, our credentials are not configured correctly — do not proceed to `terraform apply`.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2057).png)
 
 ### Initialize and Apply:
 ```bash
 cd terraform
 
-terraform init
+terraform init -upgrade
 ```
 Downloads the AWS, Helm, and Kubernetes provider plugins and the referenced modules.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2068).png)
 
 ### Review the Plan
 ```bash
 terraform plan
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2070).png)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2071).png)
 
 Review the plan carefully. It will create:
 | Resource | Count |
@@ -149,13 +165,17 @@ Review the plan carefully. It will create:
 | IAM roles and policies (cluster, nodes, EBS CSI) | Several |
 | ArgoCD Helm release | 1 |
  
-Review the plan output carefully before applying - in particular, confirm the region, instance type, and node count match your expectations.
+Review the plan output carefully before applying - in particular, confirm the region, instance type, and node count match our expectations.
 
 ### Apply the Configuration
 ```bash
 terraform apply
 ```
 > This takes **15–20 minutes**. The longest steps are EKS cluster creation (~10 min) and the ArgoCD Helm release waiting for the node group to be ready.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2076).png)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2079).png)
 
 After completion, note the outputs:
 ```bash
@@ -165,10 +185,12 @@ We’ll get:
 - `aws eks update-kubeconfig` command → use this to connect `kubectl`.
 - ArgoCD admin password retrieval command.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2081).png)
+
 ### At this stage:
-- Your **EKS cluster** is live.
+- Our **EKS cluster** is live.
 - Terraform has provisioned VPC, subnets, NAT, node group, IAM roles, add-ons, and ArgoCD.
-- You have helper outputs ready for connecting `kubectl`.
+- We have helper outputs ready for connecting `kubectl`.
 
 ## 4. Connect to Your Cluster
 ### Update kubeconfig
@@ -177,6 +199,8 @@ Terraform gave us the command in its outputs. Run:
 aws eks update-kubeconfig --name bankapp-eks --region us-west-2
 ```
 - This updates our local `~/.kube/config` so `kubectl` knows how to reach the cluster.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2084).png)
 
 ### Verify the Connection:
 ```bash
@@ -189,8 +213,9 @@ kubectl cluster-info
 # List nodes
 kubectl get nodes -o wide
 ```
-
 We should see 3 nodes with status `Ready`, instance type `t3.medium`, spread across 3 AZs.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2087).png)
 
 ### Explore the Cluster:
 ```bash
@@ -207,30 +232,44 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-ebs-csi-driver
 kubectl top nodes
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2100).png)
+
 ### Check ArgoCD is Running:
 ```bash
 kubectl get pods -n argocd
 kubectl get svc -n argocd
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2106).png)
+
 ### Retrieve ArgoCD Credentials
 Get the ArgoCD admin password:
 ```bash
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2109).png)
+
 Get the ArgoCD LoadBalancer URL:
 ```bash
 kubectl get svc -n argocd argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 ```
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2116).png)
+
 ### Log in to ArgoCD
-- Open the LoadBalancer URL in your browser.
+- Open the LoadBalancer URL in browser.
 - Username: `admin`
 - Password: (from the secret above).
+
+    ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2118).png)
+
 - We’re now inside ArgoCD — we’ll use this in Days 84–86 for GitOps.
 
+    ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2120).png)
+
 ### At this stage:
-- `kubectl` is connected to your EKS cluster.
+- `kubectl` is connected to our EKS cluster.
 - Nodes are healthy and spread across AZs.
 - System add-ons (DNS, networking, storage, metrics) are running.
 - ArgoCD is installed and accessible.
@@ -260,17 +299,22 @@ kubectl apply -f k8s/hpa.yml
 - This sets up namespace, storage, configs, secrets, MySQL, Ollama, BankApp, and autoscaler.
 - Order matters: storage and config must exist before Deployments that reference them.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2123).png)
+
 ### Watch the Pods Start:
 ```bash
 kubectl get pods -n bankapp -w
 ```
-
 The startup order is:
 1. **MySQL** starts and becomes healthy (15-30 seconds)
 2. **Ollama** starts and pulls the TinyLlama model (2-5 minutes)
 3. **BankApp** init containers wait for both, then the app starts (30-60 seconds after dependencies)
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2126).png)
+
 All pods should reach `Running`.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2129).png)
 
 ### Check PVCs are Bound to EBS Volumes:
 ```bash
@@ -278,13 +322,17 @@ kubectl get pvc -n bankapp
 kubectl get pv
 ```
 - We should see 5Gi (MySQL) and 10Gi (Ollama) EBS volumes in the **correct AZs**.
-- Both PVCs should show `STATUS = Bound`. The backing EBS volumes are provisioned in the same AZ as the node the pod is scheduled on - confirm this matches your nodes from `kubectl get nodes -o wide`.
+- Both PVCs should show `STATUS = Bound`. The backing EBS volumes are provisioned in the same AZ as the node the pod is scheduled on - confirm this matches our nodes from `kubectl get nodes -o wide`.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2135).png)
 
 ### Access the App
 Once all pods are running, access the app:
 ```bash
-kubectl port-forward svc/bankapp-service -n bankapp 8080:8080
+kubectl port-forward svc/bankapp-service -n bankapp 8080:8080 --address 0.0.0.0
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2143).png)
 
 Open in browser:
 ```Code
@@ -292,7 +340,12 @@ http://localhost:8080
 ```
 Expected:
 - AI-BankApp login page.
+
+    ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2151).png)
+
 - Register account, log in, test AI Chatbot to confirm all three services are communicating correctly.
+
+    ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2153).png)
 
 ### Verify HPA
 ```bash
@@ -303,10 +356,12 @@ Expected:
 - Target CPU utilization configured.
 - Current/desired replicas shown.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2158).png)
+
 ### At this stage:
 - BankApp, MySQL, and Ollama are running on EKS.
 - PVCs are bound to EBS volumes.
-- You can access the app locally via port-forward.
+- We can access the app locally via port-forward.
 - HPA is active and monitoring CPU.
 
 ## 6. Understand EKS Costs and Clean Up Strategy
@@ -321,7 +376,7 @@ EKS is billed continuously while resources are running. The AI-BankApp cluster c
 | LoadBalancer (ArgoCD) | ~$0.025/hr (~$18/month) |
 | **Total for this lab** | **~$220/month (~$7/day)** |
 
->**Do not leave the cluster running when you are not actively using it.**
+>**Do not leave the cluster running when we are not actively using it.**
 
 
 ### Delete the BankApp workload (keep the cluster for Days 82-83):
@@ -340,6 +395,8 @@ kubectl delete -f k8s/namespace.yml
 ```
 - This removes all application resources while keeping the EKS cluster, node group, and ArgoCD alive for the next sessions.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2245).png)
+
 ### Destroy Everything (do this at the end of Day 83 or if taking a break):
 ```bash
 cd terraform
@@ -348,6 +405,10 @@ terraform destroy
 - Type `yes` when prompted.
 - Takes ~10–15 minutes.
 - Deletes VPC, subnets, NAT, EKS cluster, node group, IAM roles, EBS volumes,LoadBalancer, ArgoCD.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2249).png)
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2250).png)
 
 After this, our AWS account should be completely clean - no leftover resources.
 
