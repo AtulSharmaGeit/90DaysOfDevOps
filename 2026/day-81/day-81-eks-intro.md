@@ -132,9 +132,10 @@ aws configure
 # Verify
 aws sts get-caller-identity
 ```
-Expected output includes our AWS account ID, user ARN, and user ID. If this fails, our credentials are not configured correctly — do not proceed to `terraform apply`.
 
 ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2057).png)
+
+Expected output includes our AWS account ID, user ARN, and user ID. If this fails, our credentials are not configured correctly — do not proceed to `terraform apply`.
 
 ### Initialize and Apply:
 ```bash
@@ -181,11 +182,12 @@ After completion, note the outputs:
 ```bash
 terraform output
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2081).png)
+
 We’ll get:
 - `aws eks update-kubeconfig` command → use this to connect `kubectl`.
 - ArgoCD admin password retrieval command.
-
-![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2081).png)
 
 ### At this stage:
 - Our **EKS cluster** is live.
@@ -345,7 +347,7 @@ Expected:
 
 - Register account, log in, test AI Chatbot to confirm all three services are communicating correctly.
 
-    ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/f6cad694f43be7ecb14720593c51801e3ec73e2a/2026/day-81/Screenshots/Screenshot%20(2153).png)
+    ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/36eb1231db23f7a8a211e8a1e8cdd27c44c85ca3/2026/day-81/Screenshots/Screenshot%20(2153).png)
 
 ### Verify HPA
 ```bash
