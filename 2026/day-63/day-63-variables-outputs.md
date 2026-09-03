@@ -186,16 +186,25 @@ terraform plan
 # Prompts for project_name (no default set)
 # All other values use their defaults
 ```
- 
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2265).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2267).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2268).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2270).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2272).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2274).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2276).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2278).png)
+
 ## 2. Variable Files and Precedence
 ### Create `terraform.tfvars`
-This file is automatically loaded by Terraform if present. Create it in your project root:
+This file is automatically loaded by Terraform if present. Create it in our project root:
 ```hcl
 project_name = "terraweek"
 environment  = "dev"
 instance_type = "t2.micro"
 ```
-- This sets defaults for your dev environment.
+- This sets defaults for our dev environment.
 
 ### Create `prod.tfvars`
 This file is for production overrides. Create it alongside `terraform.tfvars`:
@@ -213,14 +222,20 @@ subnet_cidr  = "10.1.1.0/24"
 terraform plan
 ```
 - Terraform automatically loads `terraform.tfvars`.
-- You’ll see a plan with `environment = dev` and `instance_type = t2.micro`.
+- We’ll see a plan with `environment = dev` and `instance_type = t2.micro`.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2280).png)
 
 ### Apply with Prod File
 ```bash
 terraform plan -var-file="prod.tfvars"
 ```
 - This overrides defaults with production values.
-- You’ll see `environment = prod`, `instance_type = t3.small`, and new CIDRs.
+- We’ll see `environment = prod`, `instance_type = t3.small`, and new CIDRs.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2283).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2286).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2288).png)
 
 ### Override with CLI
 ```bash
@@ -228,6 +243,8 @@ terraform plan -var="instance_type=t2.nano"
 ```
 - CLI flags always win.
 - Even if `prod.tfvars` says `t3.small`, this forces `t2.nano`.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2290).png)
 
 ### Override with Environment Variable
 ```bash
@@ -253,7 +270,7 @@ terraform plan
 Outputs expose resource attributes after `terraform apply` — making values like public IPs and resource IDs available for display, scripting, and inter-module references.
 
 ### Create `outputs.tf`
-In your project root, add a new file called `outputs.tf` with the following:
+In our project root, add a new file called `outputs.tf` with the following:
 ```hcl
 output "vpc_id" {
   description = "The VPC ID"
@@ -285,40 +302,60 @@ output "security_group_id" {
   value       = aws_security_group.sg.id
 }
 ```
-- Each output block references the resource created in your `main.tf`. Adjust names (`aws_vpc.main`, `aws_subnet.public`, etc.) to match your actual resource names.
+- Each output block references the resource created in our `main.tf`. Adjust names (`aws_vpc.main`, `aws_subnet.public`, etc.) to match our actual resource names.
 
 ### Apply Your Config
 ```bash
 terraform apply
 ```
-- Terraform will provision your resources.
-- At the end of the apply, you’ll see the outputs printed automatically.
+- Terraform will provision our resources.
+- At the end of the apply, we’ll see the outputs printed automatically.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2294).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2295).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2296).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2297).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2299).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2301).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2302).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2303).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2304).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2305).png)
 
 ### Verify Outputs
 After apply, test the following commands:
 ```bash
 terraform output
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2307).png)
+
 Shows all outputs.
 ```bash
 terraform output instance_public_ip
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2309).png)
+
 Shows only the public IP.
 ```bash
 terraform output -json
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2312).png)
+
 Shows outputs in JSON format (useful for scripting or CI/CD pipelines).
 
 ### When outputs are useful
 | Use case | Example |
 |---|---|
-| Display after deploy | Print the public IP so you can SSH immediately |
+| Display after deploy | Print the public IP so we can SSH immediately |
 | Pass to scripts | `IP=$(terraform output -raw instance_public_ip)` |
 | Inter-module references | A networking module exposes `vpc_id` for other modules to consume |
 | CI/CD pipelines | Parse JSON output to drive downstream steps |
 
 ## 4. Use Data Sources
-A **data source** reads existing information from AWS (or another provider) without creating anything. This keeps your config dynamic and region-portable — no more hardcoded AMI IDs that break when you change regions.
+A **data source** reads existing information from AWS (or another provider) without creating anything. This keeps our config dynamic and region-portable — no more hardcoded AMI IDs that break when we change regions.
  
 ### Data source vs resource
 | | `resource` | `data` source |
@@ -353,7 +390,7 @@ data "aws_ami" "amazon_linux" {
   }
 }
 ```
-- This ensures you always get the latest Amazon Linux 2 AMI in any region.
+- This ensures we always get the latest Amazon Linux 2 AMI in any region.
 
 ### Replace Hardcoded AMI
 Update our EC2 resource in `main.tf`:
@@ -377,12 +414,12 @@ resource "aws_instance" "main" {
 ```
 
 ### Add Availability Zones Data Source `data.tf`
-Fetch available AZs in your region:
+Fetch available AZs in our region:
 ```hcl
 # Fetch available AZs
 data "aws_availability_zones" "available" {}
 ```
-Use the first AZ for your subnet:
+Use the first AZ for our subnet:
 ```hcl
 # Subnet
 resource "aws_subnet" "public" {
@@ -396,7 +433,7 @@ resource "aws_subnet" "public" {
   }
 }
 ```
-- Now your subnet automatically adapts to whichever region you deploy in.
+- Now our subnet automatically adapts to whichever region we deploy in.
 
 ### Apply and Verify
 Run:
@@ -404,19 +441,27 @@ Run:
 terraform apply
 ```
 - Terraform will fetch the latest AMI and AZ dynamically.
-- No more broken configs when you change regions.
+- No more broken configs when we change regions.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2315).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2317).png)
 
 Verify:
 ```bash
 terraform output instance_public_ip
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2320).png)
+
 - Check that the instance boots with Amazon Linux 2 and is placed in a valid AZ.
+
+  ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2322).png)
 
 ## 5. Use Locals for Dynamic Values
 Locals are computed values derived from variables or expressions. They are evaluated once and reused throughout the config — ideal for consistent naming and tagging patterns.
 
 ### Add a `locals` Block
-Create a new block in your config (you can put it in `main.tf` or a separate `locals.tf`):
+Create a new block in our config (we can put it in `main.tf` or a separate `locals.tf`):
 ```hcl
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
@@ -432,33 +477,112 @@ locals {
 - `common_tags` ensures every resource has consistent metadata.
 
 ### Replace Hardcoded Name Tags
-Update your resources to use `local.name_prefix` instead of hardcoded strings:
+Update our resources to use `local.name_prefix` instead of hardcoded strings:
 ```hcl
+# VPC
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
-
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-vpc"
   })
 }
 
+# Subnet
 resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr
-  availability_zone = data.aws_availability_zones.available.names[0]
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.subnet_cidr
+  map_public_ip_on_launch = true
+  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-subnet"
   })
 }
 
-resource "aws_instance" "web" {
-  ami           = data.aws_ami.amazon_linux.id
-  instance_type = var.instance_type
-  subnet_id     = aws_subnet.public.id
+# Internet Gateway
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-igw"
+  })
+}
+
+# Route Table
+resource "aws_route_table" "rt" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-rt"
+  })
+}
+
+# Route Table Association
+resource "aws_route_table_association" "assoc" {
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.rt.id
+}
+
+# Security Group
+resource "aws_security_group" "sg" {
+  vpc_id = aws_vpc.main.id
+
+  dynamic "ingress" {
+    for_each = var.allowed_ports
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-sg"
+  })
+}
+
+# EC2 Instance
+resource "aws_instance" "main" {
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.sg.id]
+  associate_public_ip_address = true
 
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-server"
+  })
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Random suffix to ensure unique bucket name
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
+# S3 Bucket for logs
+resource "aws_s3_bucket" "logs" {
+  bucket = "${local.name_prefix}-logs-${random_id.suffix.hex}"
+
+  depends_on = [aws_instance.main]
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-logs"
   })
 }
 ```
@@ -470,6 +594,20 @@ Run:
 ```bash
 terraform apply
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2327).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2329).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2331).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2332).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2333).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2335).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2341).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2338).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2342).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2343).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2345).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2347).png)
+
 Verify in the AWS console:
 | Resource | Expected Name Tag |
 |---|---|
@@ -478,13 +616,20 @@ Verify in the AWS console:
 | EC2 instance | `terraweek-dev-server` |
 | All resources | `Project=terraweek`, `Environment=dev`, `ManagedBy=Terraform` |
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2349).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2351).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2354).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2356).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2358).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2360).png)
+
 ## 6. Built-in Functions and Conditional Expressions
 ### Open Terraform Console
-Run inside your project directory:
+Run inside our project directory:
 ```bash
 terraform console
 ````
-- This opens an interactive REPL where you can test expressions before using them in configs.
+- This opens an interactive REPL where we can test expressions before using them in configs.
 
 ### Practice String Functions
 Type these one by one:
@@ -500,6 +645,8 @@ format("arn:aws:s3:::%s", "my-bucket")
 ```
 - These help with string manipulation and formatting.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2375).png)
+
 ### Practice Collection Functions
 ```hcl
 length(["a", "b", "c"])
@@ -513,6 +660,8 @@ toset(["a", "b", "a"])
 ```
 - Useful for working with lists and maps.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2378).png)
+
 ### Practice Networking Function
 ```hcl
 cidrsubnet("10.0.0.0/16", 8, 1)
@@ -520,8 +669,10 @@ cidrsubnet("10.0.0.0/16", 8, 1)
 ```
 - Useful for dynamically carving subnets from a parent CIDR block — increment the last argument to generate `10.0.2.0/24`, `10.0.3.0/24`, etc.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2381).png)
+
 ### Add Conditional Expression
-In your EC2 resource (`main.tf`):
+In our EC2 resource (`main.tf`):
 ```hcl
 resource "aws_instance" "web" {
   ami           = data.aws_ami.amazon_linux.id
@@ -551,7 +702,12 @@ terraform apply
 # Plan shows instance_type = t2.micro
 ```
 - Check the plan output — the instance type should be `t3.small`.
+
+  ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2383).png)
+
 - Switch back to `terraform.tfvars` (dev) and it should be `t2.micro`.
+
+  ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/87ed0508a7c81de5c9955fe84372235747fe99f6/2026/day-63/Screenshots/Screenshot%20(2386).png)
 
 ### Most useful functions - quick reference
 | Function | What it does | Real-world use |
