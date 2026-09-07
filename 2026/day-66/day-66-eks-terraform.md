@@ -21,12 +21,13 @@ terraform-eks/
 ├── terraform.tfvars    # Variable values
 └── k8s/                # Kubernetes manifests
 ```
- 
 ```bash
 mkdir terraform-eks && cd terraform-eks
 touch providers.tf vpc.tf eks.tf variables.tf outputs.tf terraform.tfvars
 mkdir k8s
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2652).png)
 
 ### Configure Providers (`providers.tf`)
 This file tells Terraform which cloud provider and plugins to use.
@@ -96,10 +97,10 @@ variable "vpc_cidr" {
 ```
 - Each variable has a **type** (string/number).
 - Defaults make it easy to run without extra config.
-- You can override values in `terraform.tfvars`.
+- We can override values in `terraform.tfvars`.
 
 ### Set Variable Values (`terraform.tfvars`)
-This file holds actual values you want to use.
+This file holds actual values we want to use.
 ```hcl
 region           = "ap-south-1"
 cluster_name     = "terraweek-eks"
@@ -108,7 +109,7 @@ node_instance_type = "t3.medium"
 node_desired_count = 2
 vpc_cidr         = "10.0.0.0/16"
 ```
-- `ap-south-1` = Mumbai region (closest to you).
+- `ap-south-1` = Mumbai region (closest).
 - We can change these later without touching `variables.tf`.
 
 ### Verify Setup
@@ -117,7 +118,9 @@ Run:
 terraform init
 terraform validate
 ```
-If everything is correct, Terraform will initialize the AWS provider and confirm your files are valid.
+If everything is correct, Terraform will initialize the AWS provider and confirm our files are valid.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2661).png)
 
 ## 2. Create the VPC with Registry Module
 EKS requires a VPC with both public and private subnets spread across multiple availability zones.
@@ -163,12 +166,26 @@ terraform init
 ```
 This downloads the VPC module and AWS provider.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2665).png)
+
 ### Plan the VPC
 Run:
 ```bash
 terraform plan
 ```
 - We should see a plan with ~20 resources (VPC, subnets, route tables, NAT gateway, etc.).
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2668).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2671).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2673).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2675).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2677).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2679).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2681).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2683).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2685).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2687).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2689).png)
 
 ### Why does EKS need both public and private subnets?
 - **Public subnets** → expose Kubernetes `LoadBalancer` services (like Nginx) to the internet.
@@ -236,6 +253,8 @@ terraform init
 ```
 This downloads the EKS module and its dependencies.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2691).png)
+
 ### Plan the Cluster
 Run:
 ```bash
@@ -250,12 +269,47 @@ Expect to see **30+ resources** in the plan:
 - CloudWatch log groups
 - ENIs (Elastic Network Interfaces)
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2694).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2696).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2698).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2700).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2702).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2705).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2707).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2709).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2711).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2713).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2715).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2717).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2719).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2722).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2724).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2726).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2728).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2730).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2732).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2734).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2736).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2738).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2740).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2743).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2745).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2747).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2749).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2751).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2754).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2755).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2757).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2759).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2761).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2763).png)
+
 ### Review Carefully
 Before applying:
 - Check that the **cluster name** matches `terraweek-eks`.
-- Verify **desired node count** is 2 (from your variables).
+- Verify **desired node count** is 2 (from our variables).
 - Confirm **subnet IDs** are private subnets (from VPC module).
-- Ensure IAM roles are being created automatically (you don’t need to write them manually).
+- Ensure IAM roles are being created automatically (we don’t need to write them manually).
 
 ## 4. Apply and Connect kubectl
 ### Apply the Terraform Config
@@ -263,8 +317,11 @@ Run:
 ```bash
 terraform apply
 ```
-- Terraform will show you the plan again — type `yes` to confirm.
+- Terraform will show the plan again — type `yes` to confirm.
 - This takes **10–15 minutes**. EKS cluster creation is slow because AWS provisions control plane, IAM roles, node groups, and networking.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2765).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2768).png)
 
 ### Add Outputs (`outputs.tf`)
 ```hcl
@@ -282,13 +339,17 @@ output "cluster_region" {
 ```
 - These outputs make it easy to reference cluster details later.
 
+  ![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2772).png)
+
 ### Update kubeconfig
 Once Terraform finishes, run:
 ```bash
 aws eks update-kubeconfig --name terraweek-eks --region ap-south-1
 ```
 - This command writes cluster connection info into your local `~/.kube/config`.
-- It allows `kubectl` to talk to your new EKS cluster.
+- It allows `kubectl` to talk to our new EKS cluster.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2776).png)
 
 ### Verify Cluster Connectivity
 Run these commands:
@@ -297,22 +358,31 @@ kubectl get nodes
 kubectl get pods -A
 kubectl cluster-info
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2791).png)
+
 - Nodes → 2 nodes in `Ready` state (from your `node_desired_count`).
 - Pods → `kube-system` namespace pods like `coredns`, `aws-node`, `kube-proxy` should be running.
 - Cluster info → shows API server endpoint and DNS.
 
 ### Debugging Tips
-If you see `Unauthorized`, re‑run:
+Check EKS authentication mode
 ```bash
-aws eks update-kubeconfig --name terraweek-eks --region ap-south-1
+aws eks describe-cluster --name terraweek-eks --region ap-south-1 --query "cluster.accessConfig.authenticationMode"
 ```
-If nodes are not `Ready`, check:
-```bash
-kubectl describe nodes
-kubectl get events --sort-by=.metadata.creationTimestamp
-```
-If pods are stuck in `Pending`, it’s usually subnet/permissions issues — double‑check your VPC and IAM roles.
+- This tells whether the cluster uses CONFIG_MAP, API, or API_AND_CONFIG_MAP. 
+- Newer clusters (1.23+) support EKS Access Entries, which is the modern, easier way to grant access.
 
+If mode is `API or API_AND_CONFIG_MAP`: 
+```bash
+#Add an access entry
+aws eks create-access-entry --cluster-name terraweek-eks --region ap-south-1 --principal-arn arn:aws:iam::008971674349:user/Atul-IAM-Admin --type STANDARD
+
+#Then associate an access policy
+aws eks associate-access-policy --cluster-name terraweek-eks --region ap-south-1 --principal-arn arn:aws:iam::008971674349:user/Atul-IAM-Admin --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy --access-scope type=cluster
+```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2778).png)
 
 ## 5. Deploy a Workload on the Cluster
 Our Terraform-provisioned cluster is live. Deploy something on it.
@@ -362,10 +432,8 @@ Run:
 kubectl apply -f k8s/nginx-deployment.yaml
 ```
 We should see:
-```Code
-deployment.apps/nginx-terraweek created
-service/nginx-service created
-```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2793).png)
 
 ### Watch the LoadBalancer
 Run:
@@ -374,6 +442,8 @@ kubectl get svc nginx-service -w
 ```
 - Initially, `EXTERNAL-IP` will show `<pending>`.
 - After a few minutes, AWS provisions an ELB and assigns a public IP/DNS name.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2796).png)
 
 ### Verify the Deployment
 Run these commands:
@@ -388,12 +458,16 @@ kubectl get svc
 - **Pods** → 3 pods running.
 - **Service** → `nginx-service` with an external IP/DNS.
 
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2802).png)
+
 ### Access the Nginx Page
-Copy the external IP/DNS from the service and open it in your browser:
+Copy the external IP/DNS from the service and open it in browser:
 ```Code
 http://<external-ip>
 ```
 - We should see the **Nginx welcome page**.
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2807).png)
 
 ### Debugging Tips
 If pods are stuck in `Pending`:
@@ -403,13 +477,13 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 ```
 - If service never gets an external IP:
   - Check AWS console → EC2 → Load Balancers.
-  - Ensure your VPC subnets have the correct tags (`elb` vs `internal-elb`).
+  - Ensure VPC subnets have the correct tags (`elb` vs `internal-elb`).
 - If page doesn’t load:
   - Confirm security groups allow inbound port 80.
   - Run `kubectl logs <pod-name>` to check Nginx startup.
 
 ## 6. Destroy Everything
-> **Cost warning:** EKS clusters and NAT Gateways incur charges by the hour. Always clean up when you are done.
+> **Cost warning:** EKS clusters and NAT Gateways incur charges by the hour. Always clean up when done.
 
 ### Delete Kubernetes Workload
 First remove the Nginx deployment and service:
@@ -417,10 +491,8 @@ First remove the Nginx deployment and service:
 kubectl delete -f k8s/nginx-deployment.yaml
 ```
 Expected output:
-```Code
-deployment.apps "nginx-terraweek" deleted
-service "nginx-service" deleted
-```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2812).png)
 
 > We **must** delete the `LoadBalancer` Service before running `terraform destroy`. The Service creates an AWS ELB outside of Terraform's management. If it still exists when Terraform tries to delete the VPC, the destroy will fail — the ELB holds ENIs in the subnets that block VPC deletion.
 
@@ -429,6 +501,9 @@ Run:
 ```bash
 kubectl get svc
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2816).png)
+
 - We should see no `nginx-service` anymore.
 - Then check in AWS Console:
   - Go to **EC2 → Load Balancers**.
@@ -439,13 +514,16 @@ Now destroy everything provisioned by Terraform:
 ```bash
 terraform destroy
 ```
-- Terraform will show you the plan again — type `yes` to confirm.
+- Terraform will show the plan again — type `yes` to confirm.
 - This takes **10–15 minutes** (similar to cluster creation). Terraform destroys resources in reverse dependency order:
  
 ```
 Workload (manually deleted) → EKS node group → EKS cluster
   → NAT Gateway → Subnets → Route Tables → IGW → VPC
 ```
+
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2822).png)
+![image alt](https://github.com/atulsharmadevops/90DaysOfDevOps/blob/d25387ef402bad24902886f06f33c70c8ec11d7f/2026/day-66/Screenshots/Screenshot%20(2823).png)
 
 ### Verify in AWS Console
 After destroy finishes, check:
